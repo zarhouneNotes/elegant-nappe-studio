@@ -20,7 +20,7 @@ function Header() {
     <header className="sticky top-0 z-50 border-b border-border bg-background">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="font-heading text-2xl font-semibold tracking-wide text-foreground">
-          Maison Nappe
+          Soft Royal
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
