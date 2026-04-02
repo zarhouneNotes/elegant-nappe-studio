@@ -1,14 +1,22 @@
 import { useState } from "react";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { toast } from "sonner";
+import { useAddMessage } from "@/hooks/useFirebaseData";
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const addMessage = useAddMessage();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSubmitted(true);
-    toast.success("Message sent successfully!");
+    try {
+      await addMessage.mutateAsync({ ...form, read: false });
+      setSubmitted(true);
+      toast.success("Message sent successfully!");
+    } catch {
+      toast.error("Failed to send message. Please try again.");
+    }
   };
 
   return (
@@ -27,18 +35,22 @@ export default function Contact() {
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label className="mb-1 block text-sm font-medium text-foreground">Name</label>
-                <input required type="text" className="w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-primary" />
+                <input required type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  className="w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-primary" />
               </div>
               <div>
                 <label className="mb-1 block text-sm font-medium text-foreground">Email</label>
-                <input required type="email" className="w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-primary" />
+                <input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  className="w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-primary" />
               </div>
               <div>
                 <label className="mb-1 block text-sm font-medium text-foreground">Message</label>
-                <textarea required rows={5} className="w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-primary resize-none" />
+                <textarea required rows={5} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })}
+                  className="w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-primary resize-none" />
               </div>
-              <button type="submit" className="rounded-md bg-primary px-8 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
-                Send Message
+              <button type="submit" disabled={addMessage.isPending}
+                className="rounded-md bg-primary px-8 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50">
+                {addMessage.isPending ? "Sending…" : "Send Message"}
               </button>
             </form>
           )}
