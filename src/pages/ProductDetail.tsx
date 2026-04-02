@@ -1,17 +1,22 @@
 import { useParams, Link } from "react-router-dom";
 import { useState } from "react";
-import { products } from "@/data/products";
+import { useProducts } from "@/hooks/useFirebaseData";
 import { useCart } from "@/contexts/CartContext";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 
 export default function ProductDetail() {
   const { id } = useParams();
+  const { data: products = [], isLoading } = useProducts();
   const product = products.find((p) => p.id === id);
   const { addToCart } = useCart();
   const [currentImage, setCurrentImage] = useState(0);
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedDimension, setSelectedDimension] = useState("");
+
+  if (isLoading) {
+    return <div className="container py-20 text-center text-muted-foreground">Loading…</div>;
+  }
 
   if (!product) {
     return (
@@ -27,9 +32,9 @@ export default function ProductDetail() {
 
   const handleAddToCart = () => {
     addToCart({
-      productId: product.id,
+      productId: product.id!,
       title: product.title,
-      image: product.images[0],
+      image: product.images[0] || "",
       color,
       dimension,
     });
@@ -48,28 +53,36 @@ export default function ProductDetail() {
       <div className="grid gap-10 lg:grid-cols-2">
         {/* Image Gallery */}
         <div>
-          <div className="relative aspect-square overflow-hidden rounded-lg border border-border">
-            <img src={product.images[currentImage]} alt={product.title} className="h-full w-full object-cover" />
-            <button onClick={prevImage} className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 text-foreground transition hover:bg-background">
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button onClick={nextImage} className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 text-foreground transition hover:bg-background">
-              <ChevronRight className="h-5 w-5" />
-            </button>
-          </div>
-          <div className="mt-3 flex gap-2">
-            {product.images.map((img, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentImage(i)}
-                className={`h-16 w-16 overflow-hidden rounded border transition ${
-                  i === currentImage ? "border-primary" : "border-border"
-                }`}
-              >
-                <img src={img} alt="" className="h-full w-full object-cover" />
-              </button>
-            ))}
-          </div>
+          {product.images.length > 0 ? (
+            <>
+              <div className="relative aspect-square overflow-hidden rounded-lg border border-border">
+                <img src={product.images[currentImage]} alt={product.title} className="h-full w-full object-cover" />
+                {product.images.length > 1 && (
+                  <>
+                    <button onClick={prevImage} className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 text-foreground transition hover:bg-background">
+                      <ChevronLeft className="h-5 w-5" />
+                    </button>
+                    <button onClick={nextImage} className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 text-foreground transition hover:bg-background">
+                      <ChevronRight className="h-5 w-5" />
+                    </button>
+                  </>
+                )}
+              </div>
+              <div className="mt-3 flex gap-2">
+                {product.images.map((img, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentImage(i)}
+                    className={`h-16 w-16 overflow-hidden rounded border transition ${i === currentImage ? "border-primary" : "border-border"}`}
+                  >
+                    <img src={img} alt="" className="h-full w-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="flex aspect-square items-center justify-center rounded-lg border border-border bg-muted text-muted-foreground">No images</div>
+          )}
         </div>
 
         {/* Product Info */}
@@ -77,45 +90,39 @@ export default function ProductDetail() {
           <h1 className="font-heading text-3xl font-semibold text-foreground">{product.title}</h1>
           <p className="mt-4 text-muted-foreground leading-relaxed">{product.description}</p>
 
-          {/* Color */}
-          <div className="mt-6">
-            <h3 className="text-sm font-semibold text-foreground">Color</h3>
-            <div className="mt-2 flex gap-2">
-              {product.colors.map((c) => (
-                <button
-                  key={c}
-                  onClick={() => setSelectedColor(c)}
-                  className={`rounded-md border px-4 py-2 text-sm transition ${
-                    color === c
-                      ? "border-primary bg-accent text-accent-foreground"
-                      : "border-border text-muted-foreground hover:border-primary"
-                  }`}
-                >
-                  {c}
-                </button>
-              ))}
+          {product.colors.length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-sm font-semibold text-foreground">Color</h3>
+              <div className="mt-2 flex gap-2">
+                {product.colors.map((c) => (
+                  <button
+                    key={c}
+                    onClick={() => setSelectedColor(c)}
+                    className={`rounded-md border px-4 py-2 text-sm transition ${color === c ? "border-primary bg-accent text-accent-foreground" : "border-border text-muted-foreground hover:border-primary"}`}
+                  >
+                    {c}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* Dimensions */}
-          <div className="mt-6">
-            <h3 className="text-sm font-semibold text-foreground">Dimensions</h3>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {product.dimensions.map((d) => (
-                <button
-                  key={d}
-                  onClick={() => setSelectedDimension(d)}
-                  className={`rounded-md border px-4 py-2 text-sm transition ${
-                    dimension === d
-                      ? "border-primary bg-accent text-accent-foreground"
-                      : "border-border text-muted-foreground hover:border-primary"
-                  }`}
-                >
-                  {d}
-                </button>
-              ))}
+          {product.dimensions.length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-sm font-semibold text-foreground">Dimensions</h3>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {product.dimensions.map((d) => (
+                  <button
+                    key={d}
+                    onClick={() => setSelectedDimension(d)}
+                    className={`rounded-md border px-4 py-2 text-sm transition ${dimension === d ? "border-primary bg-accent text-accent-foreground" : "border-border text-muted-foreground hover:border-primary"}`}
+                  >
+                    {d}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           <button
             onClick={handleAddToCart}

@@ -1,16 +1,15 @@
 import { useState } from "react";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { useCategories, useAddCategory, useUpdateCategory, useDeleteCategory } from "@/hooks/useFirebaseData";
 import type { FirebaseCategory } from "@/services/firebaseService";
 
-const sampleCategories: FirebaseCategory[] = [
-  { id: "everyday", name: "Everyday Nappes", description: "Comfortable tablecloths for daily use.", image: "" },
-  { id: "premium", name: "Premium Nappes", description: "Luxurious fabrics for elevated dining.", image: "" },
-  { id: "event", name: "Event Nappes", description: "Elegant tablecloths for special occasions.", image: "" },
-];
-
 export default function AdminCategories() {
-  const [categories, setCategories] = useState<FirebaseCategory[]>(sampleCategories);
+  const { data: categories = [], isLoading } = useCategories();
+  const addCategory = useAddCategory();
+  const updateCategory = useUpdateCategory();
+  const deleteCategory = useDeleteCategory();
+
   const [editing, setEditing] = useState<FirebaseCategory | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ name: "", description: "", image: "" });
@@ -23,21 +22,29 @@ export default function AdminCategories() {
     setShowForm(true);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editing?.id) {
-      setCategories((prev) => prev.map((c) => (c.id === editing.id ? { ...form, id: editing.id } : c)));
-      toast.success("Category updated");
-    } else {
-      setCategories((prev) => [...prev, { ...form, id: Date.now().toString() }]);
-      toast.success("Category added");
+    try {
+      if (editing?.id) {
+        await updateCategory.mutateAsync({ id: editing.id, data: form });
+        toast.success("Category updated");
+      } else {
+        await addCategory.mutateAsync(form);
+        toast.success("Category added");
+      }
+      resetForm();
+    } catch {
+      toast.error("Operation failed");
     }
-    resetForm();
   };
 
-  const handleDelete = (id: string) => {
-    setCategories((prev) => prev.filter((c) => c.id !== id));
-    toast.success("Category deleted");
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteCategory.mutateAsync(id);
+      toast.success("Category deleted");
+    } catch {
+      toast.error("Delete failed");
+    }
   };
 
   return (
@@ -76,20 +83,25 @@ export default function AdminCategories() {
         </form>
       )}
 
-      <div className="mt-6 space-y-3">
-        {categories.map((c) => (
-          <div key={c.id} className="flex items-center justify-between rounded-lg border border-border p-4">
-            <div>
-              <h3 className="text-sm font-semibold text-foreground">{c.name}</h3>
-              <p className="text-xs text-muted-foreground">{c.description}</p>
+      {isLoading ? (
+        <p className="mt-6 text-center text-muted-foreground">Loading…</p>
+      ) : (
+        <div className="mt-6 space-y-3">
+          {categories.map((c) => (
+            <div key={c.id} className="flex items-center justify-between rounded-lg border border-border p-4">
+              <div>
+                <h3 className="text-sm font-semibold text-foreground">{c.name}</h3>
+                <p className="text-xs text-muted-foreground">{c.description}</p>
+              </div>
+              <div className="flex gap-2">
+                <button onClick={() => openEdit(c)} className="rounded p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"><Pencil className="h-4 w-4" /></button>
+                <button onClick={() => handleDelete(c.id!)} className="rounded p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"><Trash2 className="h-4 w-4" /></button>
+              </div>
             </div>
-            <div className="flex gap-2">
-              <button onClick={() => openEdit(c)} className="rounded p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"><Pencil className="h-4 w-4" /></button>
-              <button onClick={() => handleDelete(c.id!)} className="rounded p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"><Trash2 className="h-4 w-4" /></button>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+          {categories.length === 0 && <p className="text-sm text-muted-foreground text-center py-8">No categories yet.</p>}
+        </div>
+      )}
     </div>
   );
 }
