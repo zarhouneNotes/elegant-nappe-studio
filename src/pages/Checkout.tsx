@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
 import { Link } from "react-router-dom";
-import { useAddOrder } from "@/hooks/useFirebaseData";
+import { useAddOrder } from "@/hooks/useSupabaseData";
 import { toast } from "sonner";
 
 export default function Checkout() {

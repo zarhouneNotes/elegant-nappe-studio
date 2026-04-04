@@ -1,4 +1,4 @@
-import { useProducts } from "@/hooks/useFirebaseData";
+import { useProducts } from "@/hooks/useSupabaseData";
 import ProductCard from "@/components/ProductCard";
 
 export default function Products() {

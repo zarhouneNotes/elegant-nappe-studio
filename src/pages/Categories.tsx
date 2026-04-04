@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useCategories } from "@/hooks/useFirebaseData";
+import { useCategories } from "@/hooks/useSupabaseData";
 
 export default function Categories() {
   const { data: categories = [], isLoading } = useCategories();

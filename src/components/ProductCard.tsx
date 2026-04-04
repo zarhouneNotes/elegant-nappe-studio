@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import type { FirebaseProduct } from "@/services/firebaseService";
+import type { Product } from "@/hooks/useSupabaseData";
 
-export default function ProductCard({ product }: { product: FirebaseProduct }) {
+export default function ProductCard({ product }: { product: Product }) {
   return (
     <div className="group overflow-hidden rounded-lg border border-border bg-card transition-shadow hover:shadow-md">
       <Link to={`/product/${product.id}`} className="block">

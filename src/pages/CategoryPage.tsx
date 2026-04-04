@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { useProducts, useCategories } from "@/hooks/useFirebaseData";
+import { useProducts, useCategories } from "@/hooks/useSupabaseData";
 import ProductCard from "@/components/ProductCard";
 
 export default function CategoryPage() {

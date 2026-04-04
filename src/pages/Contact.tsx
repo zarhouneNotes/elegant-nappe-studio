@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { toast } from "sonner";
-import { useAddMessage } from "@/hooks/useFirebaseData";
+import { useAddMessage } from "@/hooks/useSupabaseData";
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
