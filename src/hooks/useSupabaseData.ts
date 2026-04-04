@@ -1,24 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  getProducts,
-  getCategories,
-  getOrders,
-  getMessages,
-  addProduct,
-  updateProduct,
-  deleteProduct,
-  addCategory,
-  updateCategory,
-  deleteCategory,
-  addOrder,
-  updateOrder,
-  addMessage,
-  markMessageRead,
-  type FirebaseProduct,
-  type FirebaseCategory,
-  type FirebaseOrder,
-  type FirebaseMessage,
-} from "@/services/firebaseService";
+  getProducts, addProduct, updateProduct, deleteProduct,
+  getCategories, addCategory, updateCategory, deleteCategory,
+  getOrders, addOrder, updateOrder,
+  getMessages, addMessage, markMessageRead,
+  type Product, type Category, type Order, type Message, type OrderItem,
+} from "@/services/supabaseService";
+import type { TablesInsert, TablesUpdate } from "@/integrations/supabase/types";
 
 // ─── Products ──────────────────────────────────────────
 
@@ -29,7 +17,7 @@ export function useProducts() {
 export function useAddProduct() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (p: Omit<FirebaseProduct, "id" | "createdAt">) => addProduct(p),
+    mutationFn: (p: TablesInsert<"products">) => addProduct(p),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["products"] }),
   });
 }
@@ -37,7 +25,7 @@ export function useAddProduct() {
 export function useUpdateProduct() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<FirebaseProduct> }) => updateProduct(id, data),
+    mutationFn: ({ id, data }: { id: string; data: TablesUpdate<"products"> }) => updateProduct(id, data),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["products"] }),
   });
 }
@@ -59,7 +47,7 @@ export function useCategories() {
 export function useAddCategory() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (c: Omit<FirebaseCategory, "id">) => addCategory(c),
+    mutationFn: (c: TablesInsert<"categories">) => addCategory(c),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["categories"] }),
   });
 }
@@ -67,7 +55,7 @@ export function useAddCategory() {
 export function useUpdateCategory() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<FirebaseCategory> }) => updateCategory(id, data),
+    mutationFn: ({ id, data }: { id: string; data: TablesUpdate<"categories"> }) => updateCategory(id, data),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["categories"] }),
   });
 }
@@ -89,7 +77,7 @@ export function useOrders() {
 export function useAddOrder() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (o: Omit<FirebaseOrder, "id" | "createdAt">) => addOrder(o),
+    mutationFn: (o: Omit<TablesInsert<"orders">, "items"> & { items: OrderItem[] }) => addOrder(o),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["orders"] }),
   });
 }
@@ -97,7 +85,7 @@ export function useAddOrder() {
 export function useUpdateOrder() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<FirebaseOrder> }) => updateOrder(id, data),
+    mutationFn: ({ id, data }: { id: string; data: TablesUpdate<"orders"> }) => updateOrder(id, data),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["orders"] }),
   });
 }
@@ -111,7 +99,7 @@ export function useMessages() {
 export function useAddMessage() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (m: Omit<FirebaseMessage, "id" | "createdAt">) => addMessage(m),
+    mutationFn: (m: TablesInsert<"messages">) => addMessage(m),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["messages"] }),
   });
 }
@@ -123,3 +111,5 @@ export function useMarkMessageRead() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["messages"] }),
   });
 }
+
+export type { Product, Category, Order, Message, OrderItem };

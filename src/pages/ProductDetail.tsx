@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useState } from "react";
-import { useProducts } from "@/hooks/useFirebaseData";
+import { useProducts } from "@/hooks/useSupabaseData";
 import { useCart } from "@/contexts/CartContext";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";

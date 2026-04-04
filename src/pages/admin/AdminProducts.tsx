@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Plus, Pencil, Trash2, Star } from "lucide-react";
 import { toast } from "sonner";
-import { useProducts, useAddProduct, useUpdateProduct, useDeleteProduct, useCategories } from "@/hooks/useFirebaseData";
-import type { FirebaseProduct } from "@/services/firebaseService";
+import { useProducts, useAddProduct, useUpdateProduct, useDeleteProduct, useCategories, type Product } from "@/hooks/useSupabaseData";
 
 export default function AdminProducts() {
   const { data: products = [], isLoading } = useProducts();
@@ -11,7 +10,7 @@ export default function AdminProducts() {
   const updateProduct = useUpdateProduct();
   const deleteProduct = useDeleteProduct();
 
-  const [editing, setEditing] = useState<FirebaseProduct | null>(null);
+  const [editing, setEditing] = useState<Product | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({
     title: "", description: "", images: "", colors: "", dimensions: "", category: "", featured: false,
@@ -23,7 +22,7 @@ export default function AdminProducts() {
     setShowForm(false);
   };
 
-  const openEdit = (p: FirebaseProduct) => {
+  const openEdit = (p: Product) => {
     setEditing(p);
     setForm({
       title: p.title, description: p.description, images: p.images.join(", "),
@@ -64,9 +63,9 @@ export default function AdminProducts() {
     }
   };
 
-  const toggleFeatured = async (p: FirebaseProduct) => {
+  const toggleFeatured = async (p: Product) => {
     try {
-      await updateProduct.mutateAsync({ id: p.id!, data: { featured: !p.featured } });
+      await updateProduct.mutateAsync({ id: p.id, data: { featured: !p.featured } });
     } catch {
       toast.error("Update failed");
     }
@@ -157,7 +156,7 @@ export default function AdminProducts() {
                 <button onClick={() => openEdit(p)} className="rounded p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground">
                   <Pencil className="h-4 w-4" />
                 </button>
-                <button onClick={() => handleDelete(p.id!)} className="rounded p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive">
+                <button onClick={() => handleDelete(p.id)} className="rounded p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive">
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>

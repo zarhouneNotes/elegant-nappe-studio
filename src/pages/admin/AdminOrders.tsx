@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { useOrders, useUpdateOrder } from "@/hooks/useFirebaseData";
+import { useOrders, useUpdateOrder, type Order } from "@/hooks/useSupabaseData";
 import { toast } from "sonner";
-import type { FirebaseOrder } from "@/services/firebaseService";
 
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800",
@@ -15,7 +14,7 @@ export default function AdminOrders() {
   const updateOrder = useUpdateOrder();
   const [expanded, setExpanded] = useState<string | null>(null);
 
-  const handleStatus = async (id: string, status: FirebaseOrder["status"]) => {
+  const handleStatus = async (id: string, status: string) => {
     try {
       await updateOrder.mutateAsync({ id, data: { status } });
     } catch {
@@ -34,12 +33,12 @@ export default function AdminOrders() {
         <div className="mt-6 space-y-3">
           {orders.map((o) => (
             <div key={o.id} className="rounded-lg border border-border">
-              <button onClick={() => setExpanded(expanded === o.id ? null : o.id!)} className="flex w-full items-center justify-between p-4 text-left">
+              <button onClick={() => setExpanded(expanded === o.id ? null : o.id)} className="flex w-full items-center justify-between p-4 text-left">
                 <div>
-                  <p className="text-sm font-semibold text-foreground">{o.fullName}</p>
+                  <p className="text-sm font-semibold text-foreground">{o.full_name}</p>
                   <p className="text-xs text-muted-foreground">{o.email} · {o.city}</p>
                 </div>
-                <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[o.status]}`}>{o.status}</span>
+                <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[o.status] || ""}`}>{o.status}</span>
               </button>
               {expanded === o.id && (
                 <div className="border-t border-border p-4 space-y-4">
@@ -56,7 +55,7 @@ export default function AdminOrders() {
                   </div>
                   <div className="flex gap-2">
                     {(["pending", "confirmed", "shipped", "delivered"] as const).map((s) => (
-                      <button key={s} onClick={() => handleStatus(o.id!, s)}
+                      <button key={s} onClick={() => handleStatus(o.id, s)}
                         className={`rounded px-3 py-1.5 text-xs font-medium capitalize ${o.status === s ? "bg-primary text-primary-foreground" : "border border-border text-muted-foreground hover:bg-accent"}`}>
                         {s}
                       </button>

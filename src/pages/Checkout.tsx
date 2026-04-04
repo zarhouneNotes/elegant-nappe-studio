@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
 import { Link } from "react-router-dom";
-import { useAddOrder } from "@/hooks/useFirebaseData";
+import { useAddOrder } from "@/hooks/useSupabaseData";
 import { toast } from "sonner";
 
 export default function Checkout() {
   const { items, clearCart } = useCart();
   const [submitted, setSubmitted] = useState(false);
   const addOrder = useAddOrder();
-  const [form, setForm] = useState({ fullName: "", phone: "", email: "", address: "", city: "", notes: "" });
+  const [form, setForm] = useState({ full_name: "", phone: "", email: "", address: "", city: "", notes: "" });
 
   if (items.length === 0 && !submitted) {
     return (
@@ -65,7 +65,7 @@ export default function Checkout() {
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="mb-1 block text-sm font-medium text-foreground">Full Name</label>
-            <input required type="text" value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+            <input required type="text" value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })}
               className="w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-primary" />
           </div>
           <div>
