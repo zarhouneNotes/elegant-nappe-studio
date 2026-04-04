@@ -8,7 +8,7 @@ export default function Checkout() {
   const { items, clearCart } = useCart();
   const [submitted, setSubmitted] = useState(false);
   const addOrder = useAddOrder();
-  const [form, setForm] = useState({ fullName: "", phone: "", email: "", address: "", city: "", notes: "" });
+  const [form, setForm] = useState({ full_name: "", phone: "", email: "", address: "", city: "", notes: "" });
 
   if (items.length === 0 && !submitted) {
     return (
