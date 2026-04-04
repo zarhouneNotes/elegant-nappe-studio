@@ -1,8 +1,7 @@
 import { useState, useRef } from "react";
 import { Plus, Pencil, Trash2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
-import { useCategories, useAddCategory, useUpdateCategory, useDeleteCategory } from "@/hooks/useFirebaseData";
-import type { FirebaseCategory } from "@/services/firebaseService";
+import { useCategories, useAddCategory, useUpdateCategory, useDeleteCategory, type Category } from "@/hooks/useSupabaseData";
 
 const MAX_IMAGES = 3;
 
@@ -21,7 +20,7 @@ export default function AdminCategories() {
   const updateCategory = useUpdateCategory();
   const deleteCategory = useDeleteCategory();
 
-  const [editing, setEditing] = useState<FirebaseCategory | null>(null);
+  const [editing, setEditing] = useState<Category | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ name: "", description: "" });
   const [images, setImages] = useState<string[]>([]);
@@ -29,10 +28,10 @@ export default function AdminCategories() {
 
   const resetForm = () => { setForm({ name: "", description: "" }); setImages([]); setEditing(null); setShowForm(false); };
 
-  const openEdit = (c: FirebaseCategory) => {
+  const openEdit = (c: Category) => {
     setEditing(c);
     setForm({ name: c.name, description: c.description });
-    setImages(c.image ? (Array.isArray(c.image) ? c.image : [c.image]) : []);
+    setImages(c.image ? [c.image] : []);
     setShowForm(true);
   };
 
@@ -51,7 +50,7 @@ export default function AdminCategories() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const payload = { ...form, image: images[0] || "" };
+      const payload = { name: form.name, description: form.description, image: images[0] || "" };
       if (editing?.id) {
         await updateCategory.mutateAsync({ id: editing.id, data: payload });
         toast.success("Category updated");
@@ -135,7 +134,7 @@ export default function AdminCategories() {
               </div>
               <div className="flex gap-2">
                 <button onClick={() => openEdit(c)} className="rounded p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"><Pencil className="h-4 w-4" /></button>
-                <button onClick={() => handleDelete(c.id!)} className="rounded p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"><Trash2 className="h-4 w-4" /></button>
+                <button onClick={() => handleDelete(c.id)} className="rounded p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"><Trash2 className="h-4 w-4" /></button>
               </div>
             </div>
           ))}

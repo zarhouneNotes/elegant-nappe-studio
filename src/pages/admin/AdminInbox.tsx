@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Mail, MailOpen } from "lucide-react";
-import { useMessages, useMarkMessageRead } from "@/hooks/useFirebaseData";
+import { useMessages, useMarkMessageRead } from "@/hooks/useSupabaseData";
 
 export default function AdminInbox() {
   const { data: messages = [], isLoading } = useMessages();
@@ -28,7 +28,7 @@ export default function AdminInbox() {
             {messages.map((m) => (
               <button
                 key={m.id}
-                onClick={() => handleSelect(m.id!)}
+                onClick={() => handleSelect(m.id)}
                 className={`w-full text-left rounded-lg border p-4 transition-colors ${selected === m.id ? "border-primary bg-primary/5" : "border-border hover:bg-accent"}`}
               >
                 <div className="flex items-center gap-2">

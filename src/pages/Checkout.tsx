@@ -65,7 +65,7 @@ export default function Checkout() {
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="mb-1 block text-sm font-medium text-foreground">Full Name</label>
-            <input required type="text" value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+            <input required type="text" value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })}
               className="w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-primary" />
           </div>
           <div>
