@@ -14,7 +14,132 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      categories: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          image: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          id?: string
+          image?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          image?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          read: boolean
+        }
+        Insert: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name: string
+          read?: boolean
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          read?: boolean
+        }
+        Relationships: []
+      }
+      orders: {
+        Row: {
+          address: string
+          city: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          items: Json
+          notes: string
+          phone: string
+          status: string
+        }
+        Insert: {
+          address?: string
+          city?: string
+          created_at?: string
+          email?: string
+          full_name: string
+          id?: string
+          items?: Json
+          notes?: string
+          phone?: string
+          status?: string
+        }
+        Update: {
+          address?: string
+          city?: string
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          items?: Json
+          notes?: string
+          phone?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          category: string
+          colors: string[]
+          created_at: string
+          description: string
+          dimensions: string[]
+          featured: boolean
+          id: string
+          images: string[]
+          title: string
+        }
+        Insert: {
+          category?: string
+          colors?: string[]
+          created_at?: string
+          description?: string
+          dimensions?: string[]
+          featured?: boolean
+          id?: string
+          images?: string[]
+          title: string
+        }
+        Update: {
+          category?: string
+          colors?: string[]
+          created_at?: string
+          description?: string
+          dimensions?: string[]
+          featured?: boolean
+          id?: string
+          images?: string[]
+          title?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
