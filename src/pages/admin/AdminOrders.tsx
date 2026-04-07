@@ -99,7 +99,7 @@ export default function AdminOrders() {
     link.click();
     document.body.removeChild(link);
     window.URL.revokeObjectURL(url);
-    toast.success(`Exported ${selectedOrderIds.size} order(s)");
+    toast.success(`Exported ${selectedOrderIds.size} order(s)`);
   };
 
   return (
