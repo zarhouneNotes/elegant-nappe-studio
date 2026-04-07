@@ -113,7 +113,8 @@ export default function AdminCategories() {
             <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFiles} />
           </div>
           <div className="flex gap-3">
-            <button type="submit" className="rounded-md bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90">
+            <button type="submit" disabled={addCategory.isPending || updateCategory.isPending} className="rounded-md bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+              {(addCategory.isPending || updateCategory.isPending) && <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin"></div>}
               {editing ? "Update" : "Add"}
             </button>
             <button type="button" onClick={resetForm} className="rounded-md border border-border px-6 py-2 text-sm font-medium text-muted-foreground hover:bg-accent">Cancel</button>

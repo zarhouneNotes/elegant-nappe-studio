@@ -8,7 +8,7 @@ export default function Checkout() {
   const { items, clearCart } = useCart();
   const [submitted, setSubmitted] = useState(false);
   const addOrder = useAddOrder();
-  const [form, setForm] = useState({ full_name: "", phone: "", email: "", address: "", city: "", notes: "" });
+  const [form, setForm] = useState({ full_name: "", phone: "", address: "", city: "", notes: "" });
 
   if (items.length === 0 && !submitted) {
     return (
@@ -71,11 +71,6 @@ export default function Checkout() {
           <div>
             <label className="mb-1 block text-sm font-medium text-foreground">Phone Number</label>
             <input required type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
-              className="w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-primary" />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium text-foreground">Email</label>
-            <input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
               className="w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm text-foreground outline-none focus:border-primary" />
           </div>
           <div>
