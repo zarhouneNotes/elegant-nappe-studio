@@ -61,7 +61,8 @@ export default function Contact() {
             <Phone className="mt-1 h-5 w-5 text-primary" />
             <div>
               <h3 className="text-sm font-semibold text-foreground">Phone</h3>
-              <p className="text-sm text-muted-foreground">+1 (555) 123-4567</p>
+              <p className="text-sm text-muted-foreground">0522202266</p>
+              <p className="text-sm text-muted-foreground">0661350579</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
@@ -75,7 +76,7 @@ export default function Contact() {
             <MapPin className="mt-1 h-5 w-5 text-primary" />
             <div>
               <h3 className="text-sm font-semibold text-foreground">Location</h3>
-              <p className="text-sm text-muted-foreground">123 Textile Avenue, Paris, France</p>
+              <p className="text-sm text-muted-foreground">6, Rue Chrarda Bourgogne, Casablanca</p>
             </div>
           </div>
         </div>
